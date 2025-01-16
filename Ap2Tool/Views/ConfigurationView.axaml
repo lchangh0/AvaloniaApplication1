@@ -1,0 +1,46 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Ap2Tool.Views.ConfigurationView"
+             xmlns:vm="using:Ap2Tool.ViewModels"
+             x:DataType="vm:ConfigurationViewModel">
+
+  <UserControl.Styles>
+  </UserControl.Styles>
+
+  <Grid RowDefinitions="50,*" ColumnDefinitions="200,2,*">
+    
+    <StackPanel Grid.Row="0" Grid.ColumnSpan="3" 
+                Orientation="Horizontal" Spacing="10"
+                Background="LightBlue">
+      <TextBlock Text="" Margin="10,0,0,0"
+                 VerticalAlignment="Center"/>
+      <TextBox Name="textSearch" Width="150" 
+               VerticalAlignment="Center"/>
+      <Button Content="Search" 
+              VerticalAlignment="Center"
+              Command="{Binding Search}" CommandParameter="{Binding #textSearch.Text}"/>
+    </StackPanel>
+    
+    <StackPanel Grid.Row="1" Grid.Column="0" 
+                Background="#ddd">
+      <TreeView ItemsSource="{Binding Nodes}">
+        <TreeView.ItemTemplate>
+          <TreeDataTemplate ItemsSource="{Binding SubNodes}">
+            <TextBlock Text="{Binding Title}"/>
+          </TreeDataTemplate>
+        </TreeView.ItemTemplate>
+      </TreeView>
+    </StackPanel>
+
+    <GridSplitter Grid.Row="1" Grid.Column="1" 
+                  Background="#999" ResizeDirection="Columns"/>
+    
+    <StackPanel Grid.Row="1" Grid.Column="2">
+    </StackPanel>
+    
+  </Grid>
+  
+</UserControl>
