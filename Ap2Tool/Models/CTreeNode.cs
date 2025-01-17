@@ -18,7 +18,13 @@ namespace Ap2Tool.Models
         {
             Title = title;
             Value = value;
-            SubNodes = subNodes;
+
+            if (subNodes != null)
+                SubNodes = subNodes;
+            else
+                SubNodes = [];
         }
+
+
     }
 }

@@ -10,8 +10,9 @@
   <UserControl.Styles>
   </UserControl.Styles>
 
-  <Grid RowDefinitions="50,*" ColumnDefinitions="200,2,*">
-    
+  <Grid RowDefinitions="50,*" ColumnDefinitions="300,2,*">
+
+    <!-- 상단 바 -->
     <StackPanel Grid.Row="0" Grid.ColumnSpan="3" 
                 Orientation="Horizontal" Spacing="10"
                 Background="LightBlue">
@@ -23,23 +24,72 @@
               VerticalAlignment="Center"
               Command="{Binding Search}" CommandParameter="{Binding #textSearch.Text}"/>
     </StackPanel>
-    
-    <StackPanel Grid.Row="1" Grid.Column="0" 
+
+    <!--항목 트리 -->
+    <Border Grid.Row="1" Grid.Column="0" 
                 Background="#ddd">
-      <TreeView ItemsSource="{Binding Nodes}">
+      
+      <TreeView Name="treeView" ItemsSource="{Binding TreeRoot.SubNodes}"
+          SelectionChanged="TreeView_SelectionChanged">
+
         <TreeView.ItemTemplate>
           <TreeDataTemplate ItemsSource="{Binding SubNodes}">
             <TextBlock Text="{Binding Title}"/>
           </TreeDataTemplate>
         </TreeView.ItemTemplate>
       </TreeView>
-    </StackPanel>
+      
+    </Border>
 
+    <!-- Splitter -->
     <GridSplitter Grid.Row="1" Grid.Column="1" 
                   Background="#999" ResizeDirection="Columns"/>
+
+
+    <!-- 항목 상세 정보 -->
+    <Grid Grid.Row="1" Grid.Column="2"
+          RowDefinitions="50,50,*">
+
+      <!-- 항목 제목 -->
+      <Border Grid.Row="0" Padding="10">
+        <TextBlock Text="{Binding ItemTitle}"/> 
+      </Border>
+
+      <!-- 항목 값 -->
+      <Border Grid.Row="1" Padding="10">
+        <Panel>
+          <TextBox Name="itemValueTextBox" 
+                   Text="{Binding ItemValueText}" IsVisible="{Binding ItemValueTextVisible}"
+                   TextChanged="TextBox_TextChanged"/>
+          <CheckBox Name="itemValueCheckBox" 
+                    Content="{Binding ItemValueBoolTitle}" IsChecked="{Binding ItemValueBool}" IsVisible="{Binding ItemValueBoolVisible}" 
+                    Checked="CheckBox_Checked"/>
+          <ComboBox Name="itemValueComboBox"
+                    Width="200" MaxDropDownHeight="300"
+                    ItemsSource="{Binding ItemValueComboBoxItems}"
+                    SelectedIndex="0"
+                    IsVisible="{Binding ItemValueEnumVisible}"
+                    SelectionChanged="ComboBox_SelectionChanged_2">
+            <ComboBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Name}"/>
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+           
+        </Panel>
+      </Border>
+
+      <!-- 항목 설명 -->
+      <Border Grid.Row="2" Padding="10">
+        <StackPanel >
+          <TextBlock Text="{Binding ItemDescriptionTitle}"/>
+          <TextBlock Text="{Binding ItemDescription}"/>
+        </StackPanel>
+      </Border>
+        
+    </Grid>
     
-    <StackPanel Grid.Row="1" Grid.Column="2">
-    </StackPanel>
     
   </Grid>
   

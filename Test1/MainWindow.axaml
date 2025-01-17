@@ -1,0 +1,46 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="using:Test1"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Test1.MainWindow"
+        x:DataType="local:MainWindowViewModel"
+        Title="Test1"
+        Width="800" Height="600">
+
+  <Window.DataContext>
+    <local:MainWindowViewModel/>
+  </Window.DataContext>
+  
+  <Grid RowDefinitions="100,*">
+    
+    <Grid Grid.Row="0" Background="LightBlue">
+      <StackPanel>
+        
+        <ComboBox SelectedIndex="0">
+          <ComboBoxItem>item1</ComboBoxItem>
+          <ComboBoxItem>item2</ComboBoxItem>
+          <ComboBoxItem>item3</ComboBoxItem>
+        </ComboBox>
+
+        <ComboBox Name="comboBox"
+                  ItemsSource="{Binding Countries}"
+                  SelectedItem="{Binding SelectedCountry}"
+                  SelectionChanged="{Binding ComboBox_SelectionChanged}">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Name}"/>
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+
+      </StackPanel>
+    </Grid>
+
+    <Grid Grid.Row="1" Background="LightGoldenrodYellow">
+      
+    </Grid>
+  </Grid>
+  
+</Window>

@@ -11,4 +11,10 @@ public partial class ConvertIniView : UserControl
     {
         InitializeComponent();
     }
+
+    public ConvertIniView(ConvertIniViewModel vm)
+    {
+        this.DataContext = vm;
+    }
+
 }
