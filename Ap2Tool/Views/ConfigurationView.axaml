@@ -20,9 +20,20 @@
                  VerticalAlignment="Center"/>
       <TextBox Name="textSearch" Width="150" 
                VerticalAlignment="Center"/>
-      <Button Content="Search" 
-              VerticalAlignment="Center"
-              Command="{Binding Search}" CommandParameter="{Binding #textSearch.Text}"/>
+      
+      <Button Name="buttonSearch" Content="{Binding SearchButtonText}" 
+              VerticalAlignment="Center" 
+              MinWidth="80" MinHeight="30" Background="#0d6efd"
+              Click="Button_Click_1"/>
+      <Button Name="buttonSearchNavPrev" Content="{Binding SearchNavPrevButtonText}" 
+              VerticalAlignment="Center" IsEnabled="{Binding SearchNavPrevButtonEnabled}" 
+              Command="{Binding OnClickSearchNavPrev}"/>
+      <Button Name="buttonSearchNavNext" Content="{Binding SearchNavNextButtonText}"
+              VerticalAlignment="Center" IsEnabled="{Binding SearchNavNextButtonEnabled}"
+              Command="{Binding OnClickSearchNavNext}"/>
+      <TextBlock Name="labelSearchRes" Text="{Binding SearchResText}"
+                 VerticalAlignment="Center"/>
+      
     </StackPanel>
 
     <!--항목 트리 -->
@@ -30,7 +41,8 @@
                 Background="#ddd">
       
       <TreeView Name="treeView" ItemsSource="{Binding TreeRoot.SubNodes}"
-          SelectionChanged="TreeView_SelectionChanged">
+                SelectedItem="{Binding TreeViewSelectedItem}"
+                SelectionChanged="TreeView_SelectionChanged">
 
         <TreeView.ItemTemplate>
           <TreeDataTemplate ItemsSource="{Binding SubNodes}">
@@ -42,13 +54,12 @@
     </Border>
 
     <!-- Splitter -->
-    <GridSplitter Grid.Row="1" Grid.Column="1" 
+    <GridSplitter Grid.Row="1" Grid.Column="1"
                   Background="#999" ResizeDirection="Columns"/>
 
-
     <!-- 항목 상세 정보 -->
-    <Grid Grid.Row="1" Grid.Column="2"
-          RowDefinitions="50,50,*">
+    <Border Grid.Row="1" Grid.Column="2" Padding="2">
+    <Grid RowDefinitions="50,50,*">
 
       <!-- 항목 제목 -->
       <Border Grid.Row="0" Padding="10">
@@ -61,35 +72,37 @@
           <TextBox Name="itemValueTextBox" 
                    Text="{Binding ItemValueText}" IsVisible="{Binding ItemValueTextVisible}"
                    TextChanged="TextBox_TextChanged"/>
+          
           <CheckBox Name="itemValueCheckBox" 
                     Content="{Binding ItemValueBoolTitle}" IsChecked="{Binding ItemValueBool}" IsVisible="{Binding ItemValueBoolVisible}" 
                     Checked="CheckBox_Checked"/>
+
           <ComboBox Name="itemValueComboBox"
                     Width="200" MaxDropDownHeight="300"
                     ItemsSource="{Binding ItemValueComboBoxItems}"
-                    SelectedIndex="0"
-                    IsVisible="{Binding ItemValueEnumVisible}"
-                    SelectionChanged="ComboBox_SelectionChanged_2">
+                    SelectedItem="{Binding SelectedItem}"
+                    IsVisible="{Binding ItemValueEnumVisible}">
             <ComboBox.ItemTemplate>
               <DataTemplate>
-                <TextBlock Text="{Binding Name}"/>
+                <TextBlock Text="{Binding Value}"/>
               </DataTemplate>
             </ComboBox.ItemTemplate>
           </ComboBox>
-           
+         
         </Panel>
       </Border>
 
       <!-- 항목 설명 -->
-      <Border Grid.Row="2" Padding="10">
-        <StackPanel >
+      <Border Grid.Row="2" Padding="10"
+              Background="#ccc">
+        <StackPanel>
           <TextBlock Text="{Binding ItemDescriptionTitle}"/>
           <TextBlock Text="{Binding ItemDescription}"/>
         </StackPanel>
       </Border>
         
     </Grid>
-    
+    </Border>
     
   </Grid>
   

@@ -1,6 +1,7 @@
 ﻿using Ap2Tool.Models;
 using ApCommon;
 using Avalonia.Controls;
+using Avalonia.Input.TextInput;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentFTP;
@@ -25,43 +26,107 @@ namespace Ap2Tool.ViewModels
         [ObservableProperty]
         CTreeNode _TreeRoot;
 
-        string m_strLogFolderPath;
-        string m_strConfigFilePath;
-        string m_strDefaultConfigFilePath;
-        string m_strCofigJsonLoaded;
-        string m_lang = "en";
-        CConfig m_config;
-        CConfig m_configLoaded;
+
+        [ObservableProperty]
+        string _ItemTitle;
+
+        [ObservableProperty]
+        string _ItemValueText;
+
+        [ObservableProperty]
+        bool _ItemValueBool;
+
+        [ObservableProperty]
+        string _ItemValueBoolTitle;
+
+        public class CComboBoxItem
+        {
+            public string Value { get; set; }
+            public string Display { get; set; }
+        }
+
+        [ObservableProperty]
+        // 주의) ObservableCollection<> 형식을 사용해야 한다.
+        ObservableCollection<CComboBoxItem> _ItemValueComboBoxItems;
+
+        CComboBoxItem _SelectedItem;
+        public CComboBoxItem SelectedItem
+        {
+            get { return _SelectedItem; }
+            set 
+            {
+                bool bChanged = _SelectedItem != value;
+                SetProperty(ref _SelectedItem, value);
+                if (bChanged)
+                    OnSelectedItemChanged(value);
+            }
+        }
+
+        void OnSelectedItemChanged(CComboBoxItem item)
+        {
+            if (item == null)
+                return;
+
+            string strValue = item.Value;
+            _SelectedConfigNode.Value = strValue;
+            _ItemValueText = strValue;
+        }
+
+
+        [ObservableProperty]
+        bool _ItemValueTextVisible;
+
+        [ObservableProperty]
+        bool _ItemValueBoolVisible;
+
+        [ObservableProperty]
+        bool _ItemValueEnumVisible;
+
+        [ObservableProperty]
+        string _ItemDescriptionTitle;
+
+        [ObservableProperty]
+        string _ItemDescription;
+
+
+        [ObservableProperty]
+        string _SearchButtonText = "Search";
+
+        [ObservableProperty]
+        string _SearchNavPrevButtonText;
+
+        [ObservableProperty]
+        string _SearchNavNextButtonText;
+
+        [ObservableProperty]
+        bool _SearchNavPrevButtonEnabled;
+
+        [ObservableProperty]
+        bool _SearchNavNextButtonEnabled;
+
+        [ObservableProperty]
+        string _SearchResText;
+
 
         public ConfigurationViewModel()
         {
             _TreeRoot = new CTreeNode("");
+            ItemDescriptionTitle = "";
+            _ItemValueComboBoxItems = new ObservableCollection<CComboBoxItem>();
 
-            ItemDescriptionTitle = "Description";
+            ApplyResourceText();
         }
 
+                
+        CConfig m_config;
+        CConfig m_configLoaded;
 
-        [RelayCommand]
-        public async void Search(string strCondition)
+        public bool Initialize()
         {
-            int dummy = 0;
-        }
-
-
-        public async Task<bool> InitializeAsync()
-        {
-            if (ConfigurationManager.AppSettings.Count == 0)
-            {
-                AppConfig.CreateAppConfigFile();
-            }
-
-            m_strDefaultConfigFilePath = Path.Combine(CSolutionGlobal.WorkDir, CConst.CONFIG_FILE);
-            m_strLogFolderPath = CSolutionGlobal.LogDir;
+            m_config = new CConfig(Program.Config);
+            m_configLoaded = new CConfig(m_config);
 
             ClearItemDisplay();
-
-            if (!await LoadAndInitConfigAsync(m_strDefaultConfigFilePath))
-                return false;
 
             if (!InitTreeviewAndShow())
                 return false;
@@ -69,136 +134,11 @@ namespace Ap2Tool.ViewModels
             return true;
         }
 
-
-        async Task<bool> LoadAndInitConfigAsync(string strConfigFilePath)
+        void ApplyResourceText()
         {
-            m_strConfigFilePath = strConfigFilePath;
-            m_config = new CConfig();
-            StringBuilder sbLog = new StringBuilder();
-            m_config.BuildTree(sbLog);
-
-            if (File.Exists(strConfigFilePath) == false)
-            {
-                string strMsg = CResource.GetString(CResource.IDS_MSG_CONFIG_FILE_NOT_FOUND_CONTINUE,
-                    "Config file is not found.\r\nDo you want to proceed with defaults?");
-                string strCaption = CResource.GetString(CResource.IDS_ERROR, "Error");
-
-                if (await MessageBox.ShowAsync(strMsg, strCaption, MessageBoxButtons.YesNo) != DialogResult.Yes)
-                {
-                    return false;
-                }
-                m_strCofigJsonLoaded = CJson.GetJsonStr(m_config);
-                await SaveConfigJsonAsync();
-            }
-            else
-            {
-                string strJson = CGenLib.ReadFileAllText(strConfigFilePath);
-
-                CConfig configFile = CJson.ParseJsonStr<CConfig>(strJson);
-
-                if (configFile == null)
-                {
-                    await MessageBox.ShowAsync("Json File Load Failure");
-                    return false;
-                }
-
-                StringBuilder sbLog2 = new StringBuilder();
-                configFile.RebuildNodeDictionary(sbLog2);
-                configFile.AdjustForConsistency();
-                m_config.UpdateValueAndComment(configFile);
-                m_strCofigJsonLoaded = CJson.GetJsonStr(m_config);
-            }
-
-            m_configLoaded = new CConfig(m_config);
-
-            // 리소스파일을 로드한다.
-            string strResourceFileName = m_config.GetValue<string>(EConfigId.ResourceFileName);
-            LoadResourceFile(strResourceFileName, m_config);
-            m_lang = CResource.Lang;
-
-            return true;
-        }
-
-
-        async Task<bool> SaveConfigJsonAsync(bool bNeedCompareToPopup = false)
-        {
-            string strConfigJson = CJson.GetJsonStr(m_config);
-
-            if (bNeedCompareToPopup)
-            {
-                if (strConfigJson == m_strCofigJsonLoaded)
-                {
-                    return false;
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty(m_strCofigJsonLoaded) != true)
-                    {
-                        string strMsg = CResource.GetString(CResource.IDS_MSG_SAVE_MODIFICATION_CONFIRM,
-                            "A modification has taken place.\r\nDo you want to save the changes?");
-                        string strCaption = CResource.GetString(CResource.IDS_WARNING, "Warning");
-
-                        if (await MessageBox.ShowAsync(strMsg, strCaption, MessageBoxButtons.YesNo) != DialogResult.Yes)
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-
-            if (m_config != null)
-            {
-                if (m_strConfigFilePath == m_strDefaultConfigFilePath)
-                {
-                    // 저장하기 전 파일 백업
-
-                    if (Directory.Exists(m_strLogFolderPath) == false)
-                        Directory.CreateDirectory(m_strLogFolderPath);
-
-                    if (strConfigJson != m_strCofigJsonLoaded)
-                    {
-                        string DatetimeNow = DateTime.Now.ToString("yyyyMMddhhmmss");
-                        string strConfigFilePathBack = Path.Combine(m_strLogFolderPath, "config.json." + DatetimeNow + ".e.txt");
-
-                        if (CGenLib.WriteFileAllText(strConfigFilePathBack, m_strCofigJsonLoaded, Encoding.UTF8, true) == false)
-                        {
-                            await MessageBox.ShowAsync("Backup Fail", "Error");
-                        }
-                    }
-                }
-
-                // 파일변경시간 및 체크섬을 설정
-                m_config.SetFileChanged();
-                strConfigJson = CJson.GetJsonStr(m_config);
-
-                if (CGenLib.WriteFileAllText(m_strConfigFilePath, strConfigJson, Encoding.UTF8, bFlushToDisk: true) == false)
-                {
-                    await MessageBox.ShowAsync("Config.json Write Fail", "Error");
-                    return false;
-                }
-                m_strCofigJsonLoaded = strConfigJson;
-
-                return true;
-            }
-            return false;
-        }
-
-
-        public bool LoadResourceFile(string strFileName, CConfig config)
-        {
-            string strResourceFile = Path.Combine(CSolutionGlobal.WorkDir, strFileName);
-            if (!CResource.LoadResourceFile(strResourceFile))
-                return false;
-
-            string strConfigResourceFilePath = Path.Combine(CSolutionGlobal.WorkDir, $"config.resource.{CResource.Lang}.txt");
-            if (CConfigLib.LoadConfigResourceFile(strConfigResourceFilePath,
-                out Dictionary<string, string> dictResource,
-                out string strErrMsg))
-                config.UpdateResource(dictResource);
-            else
-                config.ClearResource();
-
-            return true;
+            _SearchButtonText = CResource.GetString(CResource.IDS_SEARCH);
+            _SearchNavPrevButtonText = "<";
+            _SearchNavNextButtonText = ">";
         }
 
 
@@ -238,7 +178,7 @@ namespace Ap2Tool.ViewModels
             }
             else
             {
-                string strText = configNode.GetTitle(m_lang == "ko");
+                string strText = configNode.GetTitle(CResource.Lang == "ko");
                 treeNode = new CTreeNode(strText, configNode);
                 //trN.Name = configNode.Id.ToString();
 
@@ -266,48 +206,13 @@ namespace Ap2Tool.ViewModels
             return list;
         }
 
-        public class CComboBoxItem
+
+        CTreeNode _TreeViewSelectedItem;
+        public CTreeNode TreeViewSelectedItem
         {
-            public string Name { get; set; }
-            public string Value { get; set; }
+            get { return _TreeViewSelectedItem; }
+            set { SetProperty(ref _TreeViewSelectedItem, value); }
         }
-
-        //[ObservableProperty]
-        //CConfigNode _SelectedConfigItem;
-
-        [ObservableProperty]
-        string _ItemTitle;
-
-        [ObservableProperty]
-        string _ItemValueText;
-
-        [ObservableProperty]
-        bool _ItemValueBool;
-
-        [ObservableProperty]
-        string _ItemValueBoolTitle;
-
-        //[ObservableProperty]
-        //List<CComboBoxItem> _ItemValueComboBoxItems = new List<CComboBoxItem>();
-        ObservableCollection<CComboBoxItem> ItemValueComboBoxItems { get; }
-         = new ObservableCollection<CComboBoxItem>();
-
-        [ObservableProperty]
-        bool _ItemValueTextVisible;
-
-        [ObservableProperty]
-        bool _ItemValueBoolVisible;
-
-        [ObservableProperty]
-        bool _ItemValueEnumVisible;
-
-
-        [ObservableProperty]
-        string _ItemDescriptionTitle;
-
-        [ObservableProperty]
-        string _ItemDescription;
-
 
         CConfigNode _SelectedConfigNode;
 
@@ -323,7 +228,7 @@ namespace Ap2Tool.ViewModels
                 {
                     _SelectedConfigNode = configNode;
 
-                    ItemTitle = configNode.GetTitle(m_lang == "ko");
+                    ItemTitle = configNode.GetTitle(CResource.Lang == "ko");
 
                     if (configNode.NodeType == CConfigNode.ENodeType.Item)
                     {
@@ -338,15 +243,29 @@ namespace Ap2Tool.ViewModels
                         else if (configNode.ValueType == CConfigNode.EValueType.Enum)
                         {
                             ItemValueComboBoxItems.Clear();
-                            ItemValueComboBoxItems.Add(new CComboBoxItem() { Name = "name1", Value = "value1" });
-                            ItemValueComboBoxItems.Add(new CComboBoxItem() { Name = "name2", Value = "value2" });
+
+                            foreach (var item in configNode.EnumValues)
+                            {
+                                ItemValueComboBoxItems.Add(new CComboBoxItem() { Value = item, Display = item });
+                            }
+
+                            SelectedItem = null;
+                            foreach (var item in ItemValueComboBoxItems)
+                            {
+                                if (item.Value == configNode.Value)
+                                {
+                                    SelectedItem = item;
+                                    break;
+                                }
+                            }
+
                             ItemValueEnumVisible = true;
                         }
                         else
                             ItemValueTextVisible = true;
                     }
 
-                    ItemDescription = configNode.GetDescription(m_lang == "ko");
+                    ItemDescription = configNode.GetDescription(CResource.Lang == "ko");
                 }
             }
         }
@@ -387,18 +306,125 @@ namespace Ap2Tool.ViewModels
         }
 
 
-        public void OnItemValueComboBoxSelectionChanged(int iIndex)
+        List<CTreeNode> m_SearchResult = new List<CTreeNode>();
+        int m_iSearchIdx = 0;
+        TreeView m_treeView;
+        
+        public async void OnSearchButtonClick(TreeView treeView, string strCondition)
         {
-            if (_SelectedConfigNode != null)
+            if (treeView == null)
+                return;
+
+            //SearchOptionName searchOption = GetSearchOption();
+
+            m_treeView = treeView;
+            m_SearchResult.Clear();
+
+            List<CTreeNode> items = new List<CTreeNode>();
+            foreach (var tvItem in treeView.Items)
+                items.Add(tvItem as CTreeNode);
+
+            SearchNode(items, strCondition, m_SearchResult);
+
+            if (m_SearchResult.Count > 0)
             {
-                if (ItemValueComboBoxItems.Count > 0)
-                {
-                    string strValue = ItemValueComboBoxItems[iIndex].Value;
-                    _SelectedConfigNode.Value = strValue;
-                    _ItemValueText = strValue;
-                }
+                SearchNavPrevButtonEnabled = true;
+                SearchNavNextButtonEnabled= true;
+                m_iSearchIdx = 0;
+                UpdateSearchResText();
+
+                SelectTreeNode(treeView, m_SearchResult[m_iSearchIdx]);
+            }
+            else
+            {
+                SearchNavPrevButtonEnabled = false;
+                SearchNavNextButtonEnabled = false;
+                SearchResText = "";
             }
         }
+
+        void UpdateSearchResText()
+        {
+            if (m_SearchResult != null && m_SearchResult.Count > 0)
+            {
+                SearchResText = string.Format("{0}/{1}",
+                    m_iSearchIdx + 1,
+                    m_SearchResult.Count);
+            }
+            else
+                SearchResText = "";
+        }
+
+        void SearchNode(List<CTreeNode> items, string strCondition,
+            List<CTreeNode> foundItems)
+        {
+            if (items == null || items.Count == 0)
+                return;
+
+            if (string.IsNullOrEmpty(strCondition))
+                return;
+
+            foreach (CTreeNode item in items)
+            {
+                bool bFound = false;
+                CConfigNode? configNode = item.Value as CConfigNode;
+                if (configNode == null)
+                    continue;
+
+                if (configNode.Title.Contains(strCondition, StringComparison.OrdinalIgnoreCase) ||
+                    configNode.TitleKor.Contains(strCondition, StringComparison.OrdinalIgnoreCase))
+                    bFound = true;
+
+                if (!string.IsNullOrEmpty(configNode.GetTitleRes()) &&
+                    configNode.GetTitleRes().Contains(strCondition, StringComparison.OrdinalIgnoreCase))
+                    bFound = true;
+
+                if (configNode.Description.Contains(strCondition, StringComparison.OrdinalIgnoreCase) ||
+                    configNode.DescriptionKor.Contains(strCondition, StringComparison.OrdinalIgnoreCase))
+                    bFound = true;
+
+                if (!string.IsNullOrEmpty(configNode.GetDescriptionRes()) &&
+                    configNode.GetDescriptionRes().Contains(strCondition, StringComparison.OrdinalIgnoreCase))
+                    bFound = true;
+
+                if (bFound)
+                {
+                    foundItems.Add(item);
+                }
+
+                SearchNode(item.SubNodes, strCondition, foundItems);
+            }
+        }
+
+
+        void SelectTreeNode(TreeView treeView, CTreeNode treeNode)
+        {
+            //treeView.SelectedItem = treeNode;
+            TreeViewSelectedItem = treeNode;
+        }
+
+        [RelayCommand]
+        public void OnClickSearchNavPrev()
+        {
+            if (m_iSearchIdx > 0)
+            {
+                m_iSearchIdx--;
+                UpdateSearchResText();
+                SelectTreeNode(m_treeView, m_SearchResult[m_iSearchIdx]);
+            }
+        }
+
+        [RelayCommand]
+        public void OnClickSearchNavNext()
+        {
+            if (m_iSearchIdx < m_SearchResult.Count - 1)
+            {
+                m_iSearchIdx++;
+                UpdateSearchResText();
+                SelectTreeNode(m_treeView, m_SearchResult[m_iSearchIdx]);
+            }
+        }
+
 
     }
 }

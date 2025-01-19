@@ -1,6 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using ApCommon;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
+using System.Reflection;
 using System.Windows.Input;
 
 namespace Ap2Tool.ViewModels
@@ -18,11 +20,33 @@ namespace Ap2Tool.ViewModels
         // [ObservableProperty] 특성을 설정하며 CurrentViewModel Property가 자동으로 만들어진다.
         [ObservableProperty]
         ViewModelBase _CurrentViewModel;
+
+        [ObservableProperty]
+        string _MenuTextSystem;
+        [ObservableProperty]
+        string _MenuTextConfiguration;
+        [ObservableProperty]
+        string _MenuTextExit;
+        [ObservableProperty]
+        string _MenuTextFunction;
+        [ObservableProperty]
+        string _MenuTextConvertIni;
        
         public MainWindowViewModel()
         {
             _CurrentViewModel = ViewModels[0];
+            ApplyResourceText();    
         }
+
+        void ApplyResourceText()
+        {
+            _MenuTextSystem = CResource.GetString("System");
+            _MenuTextConfiguration = CResource.GetString(CResource.IDS_CONFIG);
+            _MenuTextExit = CResource.GetString(CResource.IDS_EXIT);
+            _MenuTextFunction = CResource.GetString("Function");
+            _MenuTextConvertIni = CResource.GetString("ConvertIni");
+        }
+
 
         [RelayCommand]
         public void ExitProgram()

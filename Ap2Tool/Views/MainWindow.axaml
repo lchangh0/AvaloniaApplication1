@@ -21,13 +21,13 @@
     <Menu Grid.Row="0"
           Background="#ccc">
       
-      <MenuItem Header="System">
-        <MenuItem Header="Configuration" Command="{Binding GotoConfigurationView}"/>
-        <MenuItem Header="Exit" Command="{Binding ExitProgram}"/>
+      <MenuItem Header="{Binding MenuTextSystem}">
+        <MenuItem Header="{Binding MenuTextConfiguration}" Command="{Binding GotoConfigurationView}"/>
+        <MenuItem Header="{Binding MenuTextExit}" Command="{Binding ExitProgram}"/>
       </MenuItem>
 
-      <MenuItem Header="Operation">
-        <MenuItem Header="Convert ini" Command="{Binding GotoConvertIniView}"/>
+      <MenuItem Header="{Binding MenuTextFunction}">
+        <MenuItem Header="{Binding MenuTextConvertIni}" Command="{Binding GotoConvertIniView}"/>
       </MenuItem>
       
     </Menu>

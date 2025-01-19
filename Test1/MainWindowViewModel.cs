@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
@@ -15,36 +16,54 @@ namespace Test1
         //public ObservableCollection<Country> Countries { get; }
 
         [ObservableProperty]
-        public List<Country> countries;
+        public ObservableCollection<Country> countries;
 
-        [ObservableProperty]
+        
         private Country selectedCountry;
+        public Country SelectedCountry
+        {
+            get => selectedCountry;
+            set
+            {
+                SetProperty(ref selectedCountry, value);
+                OnSelectionChanged(value);
+            }
+        }
 
-        public IRelayCommand<object> ComboBoxSelectionChangedCommand { get; }
+        void OnSelectionChanged(Country country)
+        {
+            int dummy = 0;
+        }
 
         public MainWindowViewModel()
         {
-            Countries = new List<Country>
+            Countries = new ObservableCollection<Country>
             { 
                 new Country { Name="South Korea", Flag = "태극기"  },
                 new Country { Name="USA", Flag = "성조기"},
             };
-
-            ComboBoxSelectionChangedCommand = new RelayCommand<object>(OnComboBoxSelectionChanged);
         }
 
 
-        void OnComboBoxSelectionChanged(object? sender)
+        [RelayCommand]
+        public void OnButtonClick()
         {
-            int dummy = 0;
+            Countries.Clear();
+            Countries.Add(new Country { Name = "A" });
+            Countries.Add(new Country { Name = "B" });
         }
 
         [RelayCommand]
-        public void ComboBox_SelectionChanged(SelectionChangedEventArgs e)
+        public void OnPrevButtonClick()
         {
-            int dummy = 0;
+            SelectedCountry = Countries[0];
         }
 
+        [RelayCommand]
+        public void OnNextButtonClick()
+        {
+            SelectedCountry = Countries[1];
+        }
 
     }
 

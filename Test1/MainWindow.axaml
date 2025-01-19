@@ -12,12 +12,12 @@
   <Window.DataContext>
     <local:MainWindowViewModel/>
   </Window.DataContext>
-  
+
   <Grid RowDefinitions="100,*">
-    
+
     <Grid Grid.Row="0" Background="LightBlue">
       <StackPanel>
-        
+
         <ComboBox SelectedIndex="0">
           <ComboBoxItem>item1</ComboBoxItem>
           <ComboBoxItem>item2</ComboBoxItem>
@@ -27,7 +27,7 @@
         <ComboBox Name="comboBox"
                   ItemsSource="{Binding Countries}"
                   SelectedItem="{Binding SelectedCountry}"
-                  SelectionChanged="{Binding ComboBox_SelectionChanged}">
+                  SelectionChanged="ComboBox_SelectionChanged">
           <ComboBox.ItemTemplate>
             <DataTemplate>
               <TextBlock Text="{Binding Name}"/>
@@ -39,8 +39,24 @@
     </Grid>
 
     <Grid Grid.Row="1" Background="LightGoldenrodYellow">
-      
+      <StackPanel>
+        <Button Content="Click" Command="{Binding OnButtonClick}"/>
+        <Button Content="Prev" Command="{Binding OnPrevButtonClick}"/>
+        <Button Content="Next" Command="{Binding OnNextButtonClick}"/>
+        
+        <ComboBox Name="comboBox2"
+                    ItemsSource="{Binding Countries}"
+                    SelectedItem="{Binding SelectedCountry}">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Name}"/>
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+      </StackPanel>
+
     </Grid>
+
   </Grid>
-  
+
 </Window>

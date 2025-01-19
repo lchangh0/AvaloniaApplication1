@@ -25,13 +25,13 @@ public partial class ConfigurationView : UserControl
         return vm;
     }
 
-    protected override async void OnInitialized()
+    protected override void OnInitialized()
     {
         base.OnInitialized();
 
         ConfigurationViewModel? vm = GetViewModel();
         if (vm != null)
-            await vm.InitializeAsync();
+            vm.Initialize();
     }
 
     private void TreeView_SelectionChanged(object? sender, Avalonia.Controls.SelectionChangedEventArgs e)
@@ -57,15 +57,9 @@ public partial class ConfigurationView : UserControl
         vm.OnItemValueTextTextChanged(strText);
     }
 
-    private void ComboBox_SelectionChanged_1(object? sender, Avalonia.Controls.SelectionChangedEventArgs e)
+    private void Button_Click_1(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        int iIndex = itemValueComboBox.SelectedIndex;
         var vm = GetViewModel();
-        vm.OnItemValueComboBoxSelectionChanged(iIndex);
-    }
-
-    private void ComboBox_SelectionChanged_2(object? sender, Avalonia.Controls.SelectionChangedEventArgs e)
-    {
-        int dummy = 0;
+        vm.OnSearchButtonClick(treeView, textSearch.Text);
     }
 }
