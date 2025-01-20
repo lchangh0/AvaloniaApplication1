@@ -18,6 +18,11 @@ namespace Test1
         [ObservableProperty]
         public ObservableCollection<Country> countries;
 
+        [ObservableProperty]
+        bool _Option1Checked;
+
+        [ObservableProperty]
+        bool _Option2Checked;
         
         private Country selectedCountry;
         public Country SelectedCountry

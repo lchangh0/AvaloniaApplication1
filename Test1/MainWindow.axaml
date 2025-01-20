@@ -53,6 +53,18 @@
             </DataTemplate>
           </ComboBox.ItemTemplate>
         </ComboBox>
+
+        <Button Content="Flyout Test">
+          <Button.Flyout>
+            <Flyout>
+              <StackPanel>
+                <CheckBox Content="Option1" IsChecked="{Binding Option1Checked}" />
+                <CheckBox Content="Option2" IsChecked="{Binding Option2Checked}" />
+              </StackPanel>
+            </Flyout>
+          </Button.Flyout>
+        </Button>
+        
       </StackPanel>
 
     </Grid>

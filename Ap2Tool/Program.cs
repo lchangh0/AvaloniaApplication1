@@ -81,16 +81,62 @@ namespace Ap2Tool
                 .LogToTrace();
 
 
+
+        public static void ConfigNLog(string strLogDir, NLog.LogLevel logLevel)
+        {
+            var config = new NLog.Config.LoggingConfiguration();
+
+            var targetFileApp = new NLog.Targets.FileTarget("logfileApp")
+            {
+                FileName = Path.Combine(strLogDir, "Ap2Tool.${date:format=yyyyMMdd}.log"),
+                Encoding = Encoding.UTF8,
+            };
+            var targetFileLogger = new NLog.Targets.FileTarget("logfileLogger")
+            {
+                FileName = Path.Combine(strLogDir, "${logger}.${date:format=yyyyMMdd}.log"),
+                Encoding = Encoding.UTF8,
+            };
+
+            var targetConsole = new NLog.Targets.ConsoleTarget("logConsole");
+            var targetNull = new NLog.Targets.NullTarget();
+
+            config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Info, targetNull, loggerNamePattern: "Microsoft.*", final: true);
+            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "cst", final: true);
+            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "mcu", final: true);
+            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "prt", final: true);
+            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "dis", final: true);
+            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "tur", final: true);
+            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "Ap", final: true);
+            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "alarm", final: true);
+            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "AtmsS", final: true);
+            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "AtmsR", final: true);
+            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "AtmsApiController", final: true);
+            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "UiApiController", final: true);
+            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "visAp", final: true);
+            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "visIns", final: true);
+            config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, targetConsole, loggerNamePattern: "*");
+            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileApp, loggerNamePattern: "*");
+
+            NLog.LogManager.Configuration = config;
+        }
+
+
         static CConfig m_config;
         public static CConfig Config
         {
             get { return m_config; }
         }
+
         static string m_strConfigFilePath;
+        public static string ConfigFilePath
+        {
+            get { return m_strConfigFilePath; }
+        }
+
         static string m_strCofigJsonLoaded;
         static string m_strLogDir;
 
-        static async Task<bool> LoadAndInitConfigAsync(string strConfigFilePath)
+        public static async Task<bool> LoadAndInitConfigAsync(string strConfigFilePath)
         {
             m_config = new CConfig();
             StringBuilder sbLog = new StringBuilder();
@@ -131,7 +177,7 @@ namespace Ap2Tool
         }
 
 
-        static async Task<bool> SaveConfigJsonAsync(bool bNeedCompareToPopup = false)
+        public static async Task<bool> SaveConfigJsonAsync(bool bNeedCompareToPopup = false)
         {
             string strConfigJson = CJson.GetJsonStr(m_config);
 
@@ -159,22 +205,18 @@ namespace Ap2Tool
 
             if (m_config != null)
             {
-                if (m_strConfigFilePath == m_strConfigFilePath)
+                // 저장하기 전 파일 백업
+                if (Directory.Exists(m_strLogDir) == false)
+                    Directory.CreateDirectory(m_strLogDir);
+
+                if (strConfigJson != m_strCofigJsonLoaded)
                 {
-                    // 저장하기 전 파일 백업
+                    string DatetimeNow = DateTime.Now.ToString("yyyyMMddhhmmss");
+                    string strConfigFilePathBack = Path.Combine(m_strLogDir, "config.json." + DatetimeNow + ".e.txt");
 
-                    if (Directory.Exists(m_strLogDir) == false)
-                        Directory.CreateDirectory(m_strLogDir);
-
-                    if (strConfigJson != m_strCofigJsonLoaded)
+                    if (CGenLib.WriteFileAllText(strConfigFilePathBack, m_strCofigJsonLoaded, Encoding.UTF8, true) == false)
                     {
-                        string DatetimeNow = DateTime.Now.ToString("yyyyMMddhhmmss");
-                        string strConfigFilePathBack = Path.Combine(m_strLogDir, "config.json." + DatetimeNow + ".e.txt");
-
-                        if (CGenLib.WriteFileAllText(strConfigFilePathBack, m_strCofigJsonLoaded, Encoding.UTF8, true) == false)
-                        {
-                            await MessageBox.ShowAsync("Backup Fail", "Error");
-                        }
+                        await MessageBox.ShowAsync("Backup Fail", "Error");
                     }
                 }
 
@@ -199,44 +241,6 @@ namespace Ap2Tool
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("Ver {0}", VERSION);
             return sb.ToString();
-        }
-
-        public static void ConfigNLog(string strLogDir, NLog.LogLevel logLevel)
-        {
-            var config = new NLog.Config.LoggingConfiguration();
-
-            var targetFileApp = new NLog.Targets.FileTarget("logfileApp")
-            {
-                FileName = Path.Combine(strLogDir, "Ap2Tool.${date:format=yyyyMMdd}.log"),
-                Encoding = Encoding.UTF8,
-            };
-            var targetFileLogger = new NLog.Targets.FileTarget("logfileLogger")
-            {
-                FileName = Path.Combine(strLogDir, "${logger}.${date:format=yyyyMMdd}.log"),
-                Encoding = Encoding.UTF8,
-            };
-
-            var targetConsole = new NLog.Targets.ConsoleTarget("logConsole");
-            var targetNull = new NLog.Targets.NullTarget();
-
-            config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Info, targetNull, loggerNamePattern: "Microsoft.*", final: true);
-            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "cst", final: true);
-            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "mcu", final: true);
-            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "prt", final: true);
-            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "dis", final: true);
-            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "tur", final: true);
-            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "Ap", final: true);
-            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "alarm", final: true);
-            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "AtmsS", final: true);
-            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "AtmsR", final: true);
-            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "AtmsApiController", final: true);
-            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "UiApiController", final: true);
-            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "visAp", final: true);
-            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileLogger, loggerNamePattern: "visIns", final: true);
-            config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, targetConsole, loggerNamePattern: "*");
-            config.AddRule(logLevel, NLog.LogLevel.Fatal, targetFileApp, loggerNamePattern: "*");
-
-            NLog.LogManager.Configuration = config;
         }
 
         public static bool LoadResourceFile(string strFileName, CConfig config)

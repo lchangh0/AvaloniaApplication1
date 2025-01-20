@@ -93,6 +93,21 @@ namespace Ap2Tool.ViewModels
         string _SearchButtonText = "Search";
 
         [ObservableProperty]
+        string _SaveConfigButtonText = "Save";
+
+        [ObservableProperty]
+        string _ShowUiGroupCheckBoxText;
+
+        [ObservableProperty]
+        string _ShowDevelopGroupCheckBoxText;
+
+        [ObservableProperty]
+        bool _ShowUiGroupChecked;
+
+        [ObservableProperty]
+        bool _ShowDevelopGroupChecked;
+
+        [ObservableProperty]
         string _SearchNavPrevButtonText;
 
         [ObservableProperty]
@@ -123,8 +138,11 @@ namespace Ap2Tool.ViewModels
 
         public bool Initialize()
         {
-            m_config = new CConfig(Program.Config);
+            m_config = Program.Config;
             m_configLoaded = new CConfig(m_config);
+
+            ShowUiGroupChecked = CGenLib.StrToBool(AppConfig.GetValue("ShowUiGroup", "false"));
+            ShowDevelopGroupChecked = CGenLib.StrToBool(AppConfig.GetValue("ShowDevelopGroup", "false"));
 
             ClearItemDisplay();
 
@@ -139,6 +157,9 @@ namespace Ap2Tool.ViewModels
             _SearchButtonText = CResource.GetString(CResource.IDS_SEARCH);
             _SearchNavPrevButtonText = "<";
             _SearchNavNextButtonText = ">";
+            _SaveConfigButtonText = CResource.GetString(CResource.IDS_SAVE);
+            _ShowUiGroupCheckBoxText = "Show UI Group";
+            _ShowDevelopGroupCheckBoxText = "Show Develop Group";
         }
 
 
@@ -306,7 +327,7 @@ namespace Ap2Tool.ViewModels
         }
 
 
-        List<CTreeNode> m_SearchResult = new List<CTreeNode>();
+        ObservableCollection<CTreeNode> m_SearchResult = new ObservableCollection<CTreeNode>();
         int m_iSearchIdx = 0;
         TreeView m_treeView;
         
@@ -320,7 +341,7 @@ namespace Ap2Tool.ViewModels
             m_treeView = treeView;
             m_SearchResult.Clear();
 
-            List<CTreeNode> items = new List<CTreeNode>();
+            ObservableCollection<CTreeNode> items = new ObservableCollection<CTreeNode>();
             foreach (var tvItem in treeView.Items)
                 items.Add(tvItem as CTreeNode);
 
@@ -355,8 +376,8 @@ namespace Ap2Tool.ViewModels
                 SearchResText = "";
         }
 
-        void SearchNode(List<CTreeNode> items, string strCondition,
-            List<CTreeNode> foundItems)
+        void SearchNode(ObservableCollection<CTreeNode> items, string strCondition,
+            ObservableCollection<CTreeNode> foundItems)
         {
             if (items == null || items.Count == 0)
                 return;
@@ -425,6 +446,42 @@ namespace Ap2Tool.ViewModels
             }
         }
 
+        [RelayCommand]
+        public async void SaveConfig()
+        {
+            int dummy = 0;
+
+            string strResoruceFileAfter = m_config.GetValue<string>(EConfigId.ResourceFileName);
+            string strResoruceFileBefore = m_configLoaded.GetValue<string>(EConfigId.ResourceFileName);
+
+            bool bSaved = await Program.SaveConfigJsonAsync();
+            if (bSaved)
+                await MessageBox.ShowAsync(CResource.GetString(CResource.IDS_COMPLETE, "Complete"));
+
+            if (strResoruceFileAfter != strResoruceFileBefore)
+            {
+                await Program.LoadAndInitConfigAsync(Program.ConfigFilePath);
+                InitTreeviewAndShow();
+                ApplyResourceText();
+            }
+        }
+
+
+        [RelayCommand]
+        public void OnShowUiGroupCheckBoxChanged(bool bChecked)
+        {
+            ShowUiGroupChecked = bChecked;
+            AppConfig.SetValue("ShowUiGroup", bChecked.ToString());
+            InitTreeviewAndShow();
+        }
+
+        [RelayCommand]
+        public void OnShowDevelopGroupCheckBoxChanged(bool bChecked)
+        {
+            ShowDevelopGroupChecked = bChecked;
+            AppConfig.SetValue("ShowDevelopGroup", bChecked.ToString());
+            InitTreeviewAndShow();
+        }
 
     }
 }

@@ -7,34 +7,72 @@
              xmlns:vm="using:Ap2Tool.ViewModels"
              x:DataType="vm:ConfigurationViewModel">
 
-  <UserControl.Styles>
-  </UserControl.Styles>
-
   <Grid RowDefinitions="50,*" ColumnDefinitions="300,2,*">
 
     <!-- 상단 바 -->
-    <StackPanel Grid.Row="0" Grid.ColumnSpan="3" 
-                Orientation="Horizontal" Spacing="10"
-                Background="LightBlue">
-      <TextBlock Text="" Margin="10,0,0,0"
+    <Grid Grid.Row="0" Grid.ColumnSpan="3" 
+          ColumnDefinitions="500,*"
+          Background="LightBlue">
+
+      <!-- 상단 바 검색 영역 -->
+      <StackPanel Grid.Column="0"
+                  Orientation="Horizontal" Spacing="10">
+        
+        <Button Name="buttonOption" 
+                Margin="10,0,0,0">
+          <Button.Flyout>
+            <Flyout>
+              <StackPanel>
+                <CheckBox Name="showUiGroupCheckBox" 
+                          Content="{Binding ShowUiGroupCheckBoxText}" 
+                          IsChecked="{Binding ShowUiGroupChecked}"
+                          Command="{Binding OnShowUiGroupCheckBoxChanged}"
+                          CommandParameter="{Binding #showUiGroupCheckBox.IsChecked}"/>
+                <CheckBox Name="showDevelopGroupCheckBox"
+                          Content="{Binding ShowDevelopGroupCheckBoxText}"
+                          IsChecked="{Binding ShowDevelopGroupChecked}"
+                          Command="{Binding OnShowDevelopGroupCheckBoxChanged}"
+                          CommandParameter="{Binding #showDevelopGroupCheckBox.IsChecked}"/>
+              </StackPanel>
+            </Flyout>
+          </Button.Flyout>
+
+          <Image Name="imageConfig" Width="20"/>
+          
+        </Button>
+        
+        <TextBlock Text="" Margin="10,0,0,0"
+                   VerticalAlignment="Center"/>
+        <TextBox Name="textSearch" Width="150" 
                  VerticalAlignment="Center"/>
-      <TextBox Name="textSearch" Width="150" 
-               VerticalAlignment="Center"/>
       
-      <Button Name="buttonSearch" Content="{Binding SearchButtonText}" 
-              VerticalAlignment="Center" 
-              MinWidth="80" MinHeight="30" Background="#0d6efd"
-              Click="Button_Click_1"/>
-      <Button Name="buttonSearchNavPrev" Content="{Binding SearchNavPrevButtonText}" 
-              VerticalAlignment="Center" IsEnabled="{Binding SearchNavPrevButtonEnabled}" 
-              Command="{Binding OnClickSearchNavPrev}"/>
-      <Button Name="buttonSearchNavNext" Content="{Binding SearchNavNextButtonText}"
-              VerticalAlignment="Center" IsEnabled="{Binding SearchNavNextButtonEnabled}"
-              Command="{Binding OnClickSearchNavNext}"/>
-      <TextBlock Name="labelSearchRes" Text="{Binding SearchResText}"
-                 VerticalAlignment="Center"/>
+        <Button Name="buttonSearch" Content="{Binding SearchButtonText}" 
+                VerticalAlignment="Center" 
+                MinWidth="80" MinHeight="30" 
+                Background="#0d6efd" Foreground="White"
+                Click="Button_Click_1"/>
       
-    </StackPanel>
+        <Button Name="buttonSearchNavPrev" Content="{Binding SearchNavPrevButtonText}" 
+                 VerticalAlignment="Center" IsEnabled="{Binding SearchNavPrevButtonEnabled}" 
+                Command="{Binding OnClickSearchNavPrev}"/>
+        <Button Name="buttonSearchNavNext" Content="{Binding SearchNavNextButtonText}"
+                VerticalAlignment="Center" IsEnabled="{Binding SearchNavNextButtonEnabled}"
+                Command="{Binding OnClickSearchNavNext}"/>
+        <TextBlock Name="labelSearchRes" Text="{Binding SearchResText}"
+                   VerticalAlignment="Center"/>
+      </StackPanel>
+
+      <!-- 상단 바 버튼 영역 -->
+      <Grid Grid.Column="1">
+        <Button Name="buttonSaveConfig" 
+                Content="{Binding SaveConfigButtonText}"
+                VerticalAlignment="Center" HorizontalAlignment="Right"
+                Background="#0d6efd" Foreground="White"
+                Command="{Binding SaveConfig}"
+                Margin="0,0,20,0"/>
+      </Grid>
+      
+    </Grid>
 
     <!--항목 트리 -->
     <Border Grid.Row="1" Grid.Column="0" 

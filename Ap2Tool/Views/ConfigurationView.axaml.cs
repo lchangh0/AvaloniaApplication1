@@ -2,6 +2,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Ap2Tool.ViewModels;
+using System;
+using Avalonia.Media.Imaging;
+using System.IO;
+using ApCommon;
 
 namespace Ap2Tool.Views;
 
@@ -12,11 +16,22 @@ public partial class ConfigurationView : UserControl
     public ConfigurationView()
     {
         InitializeComponent();
+        LoadImage();
     }
 
     public ConfigurationView(ConfigurationViewModel vm) : this()
     {
         this.DataContext = vm;
+    }
+
+    void LoadImage()
+    {
+        string strFilePath = Path.Combine(CSolutionGlobal.WorkDir, "image", "gear.png");
+        var bitmap = new Bitmap(strFilePath);
+
+        var imageControl = this.FindControl<Image>("imageConfig");
+        imageControl.Source = bitmap;
+
     }
 
     ConfigurationViewModel? GetViewModel()

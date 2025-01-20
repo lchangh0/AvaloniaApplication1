@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,11 +11,11 @@ namespace Ap2Tool.Models
     {
         public string Title { get; set; }
         public object? Value { get; set; }
-        public List<CTreeNode>? SubNodes { get; set; }
+        public ObservableCollection<CTreeNode>? SubNodes { get; set; }
 
         public CTreeNode(string title, 
-            object? value = null, 
-            List<CTreeNode>? subNodes = null)
+            object? value = null,
+            ObservableCollection<CTreeNode>? subNodes = null)
         {
             Title = title;
             Value = value;
