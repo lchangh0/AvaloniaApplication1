@@ -6,7 +6,7 @@
              x:Class="Ap2Tool.Views.ConfigurationView"
              xmlns:vm="using:Ap2Tool.ViewModels"
              x:DataType="vm:ConfigurationViewModel">
-
+  
   <Grid RowDefinitions="50,*" ColumnDefinitions="300,2,*">
 
     <!-- 상단 바 -->
@@ -17,9 +17,14 @@
       <!-- 상단 바 검색 영역 -->
       <StackPanel Grid.Column="0"
                   Orientation="Horizontal" Spacing="10">
-        
+
+        <!--옵션 버튼 -->
         <Button Name="buttonOption" 
-                Margin="10,0,0,0">
+                Margin="10,0,0,0" MinHeight="25">
+
+          <Image Name="imageConfig" 
+                 Width="20" />
+
           <Button.Flyout>
             <Flyout>
               <StackPanel>
@@ -36,8 +41,6 @@
               </StackPanel>
             </Flyout>
           </Button.Flyout>
-
-          <Image Name="imageConfig" Width="20"/>
           
         </Button>
         
@@ -46,17 +49,21 @@
         <TextBox Name="textSearch" Width="150" 
                  VerticalAlignment="Center"/>
       
-        <Button Name="buttonSearch" Content="{Binding SearchButtonText}" 
+        <Button Name="buttonSearch" 
+                Content="{Binding SearchButtonText, FallbackValue='Search'}" 
                 VerticalAlignment="Center" 
-                MinWidth="80" MinHeight="30" 
                 Background="#0d6efd" Foreground="White"
                 Click="Button_Click_1"/>
       
-        <Button Name="buttonSearchNavPrev" Content="{Binding SearchNavPrevButtonText}" 
-                 VerticalAlignment="Center" IsEnabled="{Binding SearchNavPrevButtonEnabled}" 
+        <Button Name="buttonSearchNavPrev" 
+                VerticalAlignment="Center"
+                Content="{Binding SearchNavPrevButtonText, FallbackValue='&lt;'}" 
+                IsEnabled="{Binding SearchNavPrevButtonEnabled}" 
                 Command="{Binding OnClickSearchNavPrev}"/>
-        <Button Name="buttonSearchNavNext" Content="{Binding SearchNavNextButtonText}"
-                VerticalAlignment="Center" IsEnabled="{Binding SearchNavNextButtonEnabled}"
+        <Button Name="buttonSearchNavNext" 
+                VerticalAlignment="Center"
+                Content="{Binding SearchNavNextButtonText, FallbackValue='&gt;'}"
+                IsEnabled="{Binding SearchNavNextButtonEnabled}"
                 Command="{Binding OnClickSearchNavNext}"/>
         <TextBlock Name="labelSearchRes" Text="{Binding SearchResText}"
                    VerticalAlignment="Center"/>
@@ -65,9 +72,9 @@
       <!-- 상단 바 버튼 영역 -->
       <Grid Grid.Column="1">
         <Button Name="buttonSaveConfig" 
-                Content="{Binding SaveConfigButtonText}"
                 VerticalAlignment="Center" HorizontalAlignment="Right"
                 Background="#0d6efd" Foreground="White"
+                Content="{Binding SaveConfigButtonText, FallbackValue='Save'}"
                 Command="{Binding SaveConfig}"
                 Margin="0,0,20,0"/>
       </Grid>
@@ -112,7 +119,9 @@
                    TextChanged="TextBox_TextChanged"/>
           
           <CheckBox Name="itemValueCheckBox" 
-                    Content="{Binding ItemValueBoolTitle}" IsChecked="{Binding ItemValueBool}" IsVisible="{Binding ItemValueBoolVisible}" 
+                    Content="{Binding ItemValueBoolTitle, FallbackValue='Set'}" 
+                    IsChecked="{Binding ItemValueBool}" 
+                    IsVisible="{Binding ItemValueBoolVisible}" 
                     Checked="CheckBox_Checked"/>
 
           <ComboBox Name="itemValueComboBox"

@@ -16,23 +16,29 @@ public partial class ConfigurationView : UserControl
     public ConfigurationView()
     {
         InitializeComponent();
-        LoadImage();
+
+        // 주의) 이 생성자에 기능을 추가하면 디자이너 화면에 에러가 발생한다. ??
     }
 
     public ConfigurationView(ConfigurationViewModel vm) : this()
     {
         this.DataContext = vm;
+        LoadImage();
     }
 
     void LoadImage()
     {
-        string strFilePath = Path.Combine(CSolutionGlobal.WorkDir, "image", "gear.png");
-        var bitmap = new Bitmap(strFilePath);
+        string strFilePath = Path.Combine(CSolutionGlobal.WorkDir, "Assets", "gear.png");
+        if (File.Exists(strFilePath))
+        {
+            var bitmap = new Bitmap(strFilePath);
 
-        var imageControl = this.FindControl<Image>("imageConfig");
-        imageControl.Source = bitmap;
-
+            var imageControl = this.FindControl<Image>("imageConfig");
+            if (imageControl != null)
+                imageControl.Source = bitmap;
+        }
     }
+
 
     ConfigurationViewModel? GetViewModel()
     {
@@ -77,4 +83,5 @@ public partial class ConfigurationView : UserControl
         var vm = GetViewModel();
         vm.OnSearchButtonClick(treeView, textSearch.Text);
     }
+
 }
