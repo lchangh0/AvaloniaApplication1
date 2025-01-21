@@ -6,151 +6,166 @@
              x:Class="Ap2Tool.Views.ConfigurationView"
              xmlns:vm="using:Ap2Tool.ViewModels"
              x:DataType="vm:ConfigurationViewModel">
+
+
+  <Grid RowDefinitions="40,*">
   
-  <Grid RowDefinitions="50,*" ColumnDefinitions="300,2,*">
+    <!--제목 표시줄 -->
+    <StackPanel Grid.Row="0"
+                Orientation="Horizontal"
+                Background="#114ebf">
+      <Label Content="Configuration"
+             Margin="10,0,0,0" VerticalAlignment="Center" Foreground="#ddd"/>
+    </StackPanel>
 
-    <!-- 상단 바 -->
-    <Grid Grid.Row="0" Grid.ColumnSpan="3" 
-          ColumnDefinitions="500,*"
-          Background="LightBlue">
+    <!-- Content -->
+    <Grid Grid.Row="1"
+          RowDefinitions="50,*" ColumnDefinitions="300,2,*">
 
-      <!-- 상단 바 검색 영역 -->
-      <StackPanel Grid.Column="0"
-                  Orientation="Horizontal" Spacing="10">
+      <!-- 상단 바 -->
+      <Grid Grid.Row="0" Grid.ColumnSpan="3" 
+            ColumnDefinitions="500,*"
+            Background="LightBlue">
 
-        <!--옵션 버튼 -->
-        <Button Name="buttonOption" 
-                Margin="10,0,0,0" MinHeight="25">
+        <!-- 상단 바 검색 영역 -->
+        <StackPanel Grid.Column="0"
+                    Orientation="Horizontal" Spacing="10">
 
-          <Image Name="imageConfig" 
-                 Width="20" />
+          <!--옵션 버튼 -->
+          <Button Name="buttonOption" 
+                  Margin="10,0,0,0" MinHeight="25">
 
-          <Button.Flyout>
-            <Flyout>
-              <StackPanel>
-                <CheckBox Name="showUiGroupCheckBox" 
-                          Content="{Binding ShowUiGroupCheckBoxText}" 
-                          IsChecked="{Binding ShowUiGroupChecked}"
-                          Command="{Binding OnShowUiGroupCheckBoxChanged}"
-                          CommandParameter="{Binding #showUiGroupCheckBox.IsChecked}"/>
-                <CheckBox Name="showDevelopGroupCheckBox"
-                          Content="{Binding ShowDevelopGroupCheckBoxText}"
-                          IsChecked="{Binding ShowDevelopGroupChecked}"
-                          Command="{Binding OnShowDevelopGroupCheckBoxChanged}"
-                          CommandParameter="{Binding #showDevelopGroupCheckBox.IsChecked}"/>
-              </StackPanel>
-            </Flyout>
-          </Button.Flyout>
+            <Image Name="imageConfig" 
+                   Width="20" />
+
+            <Button.Flyout>
+              <Flyout>
+                <StackPanel>
+                  <CheckBox Name="showUiGroupCheckBox" 
+                            Content="{Binding ShowUiGroupCheckBoxText}" 
+                            IsChecked="{Binding ShowUiGroupChecked}"
+                            Command="{Binding OnShowUiGroupCheckBoxChanged}"
+                            CommandParameter="{Binding #showUiGroupCheckBox.IsChecked}"/>
+                  <CheckBox Name="showDevelopGroupCheckBox"
+                            Content="{Binding ShowDevelopGroupCheckBoxText}"
+                            IsChecked="{Binding ShowDevelopGroupChecked}"
+                            Command="{Binding OnShowDevelopGroupCheckBoxChanged}"
+                            CommandParameter="{Binding #showDevelopGroupCheckBox.IsChecked}"/>
+                </StackPanel>
+              </Flyout>
+            </Button.Flyout>
           
-        </Button>
+          </Button>
         
-        <TextBlock Text="" Margin="10,0,0,0"
+          <TextBlock Text="" Margin="10,0,0,0"
+                     VerticalAlignment="Center"/>
+          <TextBox Name="textSearch" Width="150" 
                    VerticalAlignment="Center"/>
-        <TextBox Name="textSearch" Width="150" 
-                 VerticalAlignment="Center"/>
       
-        <Button Name="buttonSearch" 
-                Content="{Binding SearchButtonText, FallbackValue='Search'}" 
-                VerticalAlignment="Center" 
-                Background="#0d6efd" Foreground="White"
-                Click="Button_Click_1"/>
+          <Button Name="buttonSearch" 
+                  Content="{Binding SearchButtonText, FallbackValue='Search'}" 
+                  VerticalAlignment="Center" 
+                  Background="#0d6efd" Foreground="White"
+                  Click="Button_Click_1"/>
       
-        <Button Name="buttonSearchNavPrev" 
-                VerticalAlignment="Center"
-                Content="{Binding SearchNavPrevButtonText, FallbackValue='&lt;'}" 
-                IsEnabled="{Binding SearchNavPrevButtonEnabled}" 
-                Command="{Binding OnClickSearchNavPrev}"/>
-        <Button Name="buttonSearchNavNext" 
-                VerticalAlignment="Center"
-                Content="{Binding SearchNavNextButtonText, FallbackValue='&gt;'}"
-                IsEnabled="{Binding SearchNavNextButtonEnabled}"
-                Command="{Binding OnClickSearchNavNext}"/>
-        <TextBlock Name="labelSearchRes" Text="{Binding SearchResText}"
-                   VerticalAlignment="Center"/>
-      </StackPanel>
-
-      <!-- 상단 바 버튼 영역 -->
-      <Grid Grid.Column="1">
-        <Button Name="buttonSaveConfig" 
-                VerticalAlignment="Center" HorizontalAlignment="Right"
-                Background="#0d6efd" Foreground="White"
-                Content="{Binding SaveConfigButtonText, FallbackValue='Save'}"
-                Command="{Binding SaveConfig}"
-                Margin="0,0,20,0"/>
-      </Grid>
-      
-    </Grid>
-
-    <!--항목 트리 -->
-    <Border Grid.Row="1" Grid.Column="0" 
-                Background="#ddd">
-      
-      <TreeView Name="treeView" ItemsSource="{Binding TreeRoot.SubNodes}"
-                SelectedItem="{Binding TreeViewSelectedItem}"
-                SelectionChanged="TreeView_SelectionChanged">
-
-        <TreeView.ItemTemplate>
-          <TreeDataTemplate ItemsSource="{Binding SubNodes}">
-            <TextBlock Text="{Binding Title}"/>
-          </TreeDataTemplate>
-        </TreeView.ItemTemplate>
-      </TreeView>
-      
-    </Border>
-
-    <!-- Splitter -->
-    <GridSplitter Grid.Row="1" Grid.Column="1"
-                  Background="#999" ResizeDirection="Columns"/>
-
-    <!-- 항목 상세 정보 -->
-    <Border Grid.Row="1" Grid.Column="2" Padding="2">
-    <Grid RowDefinitions="50,50,*">
-
-      <!-- 항목 제목 -->
-      <Border Grid.Row="0" Padding="10">
-        <TextBlock Text="{Binding ItemTitle}"/> 
-      </Border>
-
-      <!-- 항목 값 -->
-      <Border Grid.Row="1" Padding="10">
-        <Panel>
-          <TextBox Name="itemValueTextBox" 
-                   Text="{Binding ItemValueText}" IsVisible="{Binding ItemValueTextVisible}"
-                   TextChanged="TextBox_TextChanged"/>
-          
-          <CheckBox Name="itemValueCheckBox" 
-                    Content="{Binding ItemValueBoolTitle, FallbackValue='Set'}" 
-                    IsChecked="{Binding ItemValueBool}" 
-                    IsVisible="{Binding ItemValueBoolVisible}" 
-                    Checked="CheckBox_Checked"/>
-
-          <ComboBox Name="itemValueComboBox"
-                    Width="200" MaxDropDownHeight="300"
-                    ItemsSource="{Binding ItemValueComboBoxItems}"
-                    SelectedItem="{Binding SelectedItem}"
-                    IsVisible="{Binding ItemValueEnumVisible}">
-            <ComboBox.ItemTemplate>
-              <DataTemplate>
-                <TextBlock Text="{Binding Value}"/>
-              </DataTemplate>
-            </ComboBox.ItemTemplate>
-          </ComboBox>
-         
-        </Panel>
-      </Border>
-
-      <!-- 항목 설명 -->
-      <Border Grid.Row="2" Padding="10"
-              Background="#ccc">
-        <StackPanel>
-          <TextBlock Text="{Binding ItemDescriptionTitle}"/>
-          <TextBlock Text="{Binding ItemDescription}"/>
+          <Button Name="buttonSearchNavPrev" 
+                  VerticalAlignment="Center"
+                  Content="{Binding SearchNavPrevButtonText, FallbackValue='&lt;'}" 
+                  IsEnabled="{Binding SearchNavPrevButtonEnabled}" 
+                  Command="{Binding OnClickSearchNavPrev}"/>
+          <Button Name="buttonSearchNavNext" 
+                  VerticalAlignment="Center"
+                  Content="{Binding SearchNavNextButtonText, FallbackValue='&gt;'}"
+                  IsEnabled="{Binding SearchNavNextButtonEnabled}"
+                  Command="{Binding OnClickSearchNavNext}"/>
+          <TextBlock Name="labelSearchRes" Text="{Binding SearchResText}"
+                     VerticalAlignment="Center"/>
         </StackPanel>
+
+        <!-- 상단 바 버튼 영역 -->
+        <Grid Grid.Column="1">
+          <Button Name="buttonSaveConfig" 
+                  VerticalAlignment="Center" HorizontalAlignment="Right"
+                  Background="#0d6efd" Foreground="White"
+                  Content="{Binding SaveConfigButtonText, FallbackValue='Save'}"
+                  Command="{Binding SaveConfig}"
+                  Margin="0,0,20,0"/>
+        </Grid>
+      
+      </Grid>
+
+      <!--항목 트리 -->
+      <Border Grid.Row="1" Grid.Column="0" 
+                  Background="#ddd">
+      
+        <TreeView Name="treeView" ItemsSource="{Binding TreeRoot.SubNodes}"
+                  SelectedItem="{Binding TreeViewSelectedItem}"
+                  SelectionChanged="TreeView_SelectionChanged">
+
+          <TreeView.ItemTemplate>
+            <TreeDataTemplate ItemsSource="{Binding SubNodes}">
+              <TextBlock Text="{Binding Title}"/>
+            </TreeDataTemplate>
+          </TreeView.ItemTemplate>
+        </TreeView>
+      
       </Border>
+
+      <!-- Splitter -->
+      <GridSplitter Grid.Row="1" Grid.Column="1"
+                    Background="#999" ResizeDirection="Columns"/>
+
+      <!-- 항목 상세 정보 -->
+      <Border Grid.Row="1" Grid.Column="2" Padding="2">
+      <Grid RowDefinitions="50,50,*">
+
+        <!-- 항목 제목 -->
+        <Border Grid.Row="0" Padding="10">
+          <TextBlock Text="{Binding ItemTitle}"/> 
+        </Border>
+
+        <!-- 항목 값 -->
+        <Border Grid.Row="1" Padding="10">
+          <Panel>
+            <TextBox Name="itemValueTextBox" 
+                     Text="{Binding ItemValueText}" IsVisible="{Binding ItemValueTextVisible}"
+                     TextChanged="TextBox_TextChanged"/>
+          
+            <CheckBox Name="itemValueCheckBox" 
+                      Content="{Binding ItemValueBoolTitle, FallbackValue='Set'}" 
+                      IsChecked="{Binding ItemValueBool}" 
+                      IsVisible="{Binding ItemValueBoolVisible}" 
+                      Checked="CheckBox_Checked"/>
+
+            <ComboBox Name="itemValueComboBox"
+                      Width="200" MaxDropDownHeight="300"
+                      ItemsSource="{Binding ItemValueComboBoxItems}"
+                      SelectedItem="{Binding SelectedItem}"
+                      IsVisible="{Binding ItemValueEnumVisible}">
+              <ComboBox.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding Value}"/>
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+         
+          </Panel>
+        </Border>
+
+        <!-- 항목 설명 -->
+        <Border Grid.Row="2" Padding="10"
+                Background="#ccc">
+          <StackPanel>
+            <TextBlock Text="{Binding ItemDescriptionTitle}"/>
+            <TextBlock Text="{Binding ItemDescription}"/>
+          </StackPanel>
+        </Border>
         
-    </Grid>
-    </Border>
+      </Grid>
+      </Border>
     
+    </Grid>
+
   </Grid>
   
 </UserControl>

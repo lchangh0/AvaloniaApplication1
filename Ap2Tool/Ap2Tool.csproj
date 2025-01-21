@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.2.1" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.2.1" />
     <PackageReference Include="Avalonia.Desktop" Version="11.2.1" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.1" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.1" />
@@ -45,8 +46,8 @@
     <Compile Update="Views\ConfigurationView.axaml.cs">
       <DependentUpon>ConfigurationView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\ConvertIniView.axaml.cs">
-      <DependentUpon>ConvertIniView.axaml</DependentUpon>
+    <Compile Update="Views\FontListView.axaml.cs">
+      <DependentUpon>FontListView.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 

@@ -1,3 +1,4 @@
+using Ap2Tool.ViewModels;
 using Avalonia.Controls;
 
 namespace Ap2Tool.Views
@@ -7,6 +8,11 @@ namespace Ap2Tool.Views
         public MainWindow()
         {
             InitializeComponent();
+            var vm = new MainWindowViewModel();
+            vm.SetView(this);
+            this.DataContext = vm;
         }
+
+
     }
 }

@@ -18,18 +18,26 @@
 
   <Grid RowDefinitions="Auto,*">
 
+    <!-- 상단 메뉴 -->
     <Menu Grid.Row="0"
           Background="#ccc">
       
       <MenuItem Header="{Binding MenuTextSystem}">
-        <MenuItem Header="{Binding MenuTextConfiguration}" Command="{Binding GotoConfigurationView}"/>
-        <MenuItem Header="{Binding MenuTextExit}" Command="{Binding ExitProgram}"/>
+        <MenuItem Header="{Binding MenuTextConfiguration}" 
+                  Command="{Binding HandleCommandMenuConfiguration}"/>
+        <MenuItem Header="{Binding MenuTextExit}" 
+                  Command="{Binding HandleCommandMenuExit}"/>
       </MenuItem>
 
       <MenuItem Header="{Binding MenuTextFunction}">
-        <MenuItem Header="{Binding MenuTextConvertIni}" Command="{Binding GotoConvertIniView}"/>
+        <MenuItem Header="{Binding MenuTextConvertIni}"
+                  Command="{Binding HandleCommandMenuConvertIni}"/>
+        <MenuItem Header="{Binding MenuTextMakeConfigResourceFile}"
+                  Command="{Binding HandleCommandMenuMakeConfigResourceFile}"/>
+        <MenuItem Header="{Binding MenuTextFontList}"
+                  Command="{Binding HandleCommandMenuFontList}"/>
       </MenuItem>
-      
+
     </Menu>
     
     <ContentControl Grid.Row="1" Content="{Binding CurrentViewModel}"/>

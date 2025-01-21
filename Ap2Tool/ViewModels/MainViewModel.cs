@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ap2Tool.ViewModels
 {
-    public class MainViewModel : ViewModelBase
+    public partial class MainViewModel : ViewModelBase
     {
 
     }
