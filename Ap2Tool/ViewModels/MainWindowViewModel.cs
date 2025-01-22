@@ -23,7 +23,7 @@ namespace Ap2Tool.ViewModels
         ViewModelBase _CurrentViewModel;
 
         [ObservableProperty]
-        string _MenuTextSystem;
+        string _MenuTextFile;
         [ObservableProperty]
         string _MenuTextConfiguration;
         [ObservableProperty]
@@ -53,8 +53,8 @@ namespace Ap2Tool.ViewModels
 
         void ApplyResourceText()
         {
-            _MenuTextSystem = CResource.GetString("System");
-            _MenuTextConfiguration = CResource.GetString(CResource.IDS_CONFIG);
+            _MenuTextFile = CResource.GetString(CResource.IDS_FILE);
+            _MenuTextConfiguration = "Configuration";
             _MenuTextExit = CResource.GetString(CResource.IDS_EXIT);
             _MenuTextFunction = CResource.GetString("Function");
             _MenuTextConvertIni = "AP.ini to config.json";
