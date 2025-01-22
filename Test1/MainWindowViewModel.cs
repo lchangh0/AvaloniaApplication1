@@ -2,6 +2,7 @@
 using Avalonia.Markup.Xaml;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MsBox.Avalonia;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -51,11 +52,14 @@ namespace Test1
 
 
         [RelayCommand]
-        public void OnButtonClick()
+        public async void OnButtonClick()
         {
             Countries.Clear();
             Countries.Add(new Country { Name = "A" });
             Countries.Add(new Country { Name = "B" });
+
+            var box = MessageBoxManager.GetMessageBoxStandard("Caption", "Test Message", MsBox.Avalonia.Enums.ButtonEnum.Ok);
+            var result = await box.ShowAsync();
         }
 
         [RelayCommand]

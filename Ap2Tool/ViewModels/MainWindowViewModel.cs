@@ -16,11 +16,7 @@ namespace Ap2Tool.ViewModels
     {
         public string Greeting { get; } = "Welcome to Avalonia!";
 
-        ViewModelBase[] ViewModels = new ViewModelBase[] {
-            new MainViewModel(),
-            new ConfigurationViewModel(),
-            new FontListViewModel(),
-        };
+        ViewModelBase[] ViewModels;
 
         // [ObservableProperty] 특성을 설정하며 CurrentViewModel Property가 자동으로 만들어진다.
         [ObservableProperty]
@@ -44,9 +40,16 @@ namespace Ap2Tool.ViewModels
 
         public MainWindowViewModel()
         {
+            ViewModels = new ViewModelBase[] {
+                new MainViewModel(),
+                new ConfigurationViewModel(),
+                new FontListViewModel(),
+            };
+
             _CurrentViewModel = ViewModels[0];
-            ApplyResourceText();    
+            ApplyResourceText();
         }
+
 
         void ApplyResourceText()
         {

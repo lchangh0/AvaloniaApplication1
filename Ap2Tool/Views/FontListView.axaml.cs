@@ -20,37 +20,9 @@ public partial class FontListView : UserControl
         this.DataContext = vm;
     }
 
-
     FontListViewModel GetViewModel()
     {
         return this.DataContext as FontListViewModel;
     }
 
-    private void UserControl_Loaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        ChangeDataGridHeight();
-    }
-
-    private void UserControl_SizeChanged(object? sender, Avalonia.Controls.SizeChangedEventArgs e)
-    {
-        ChangeDataGridHeight();
-    }
-
-    void ChangeDataGridHeight()
-    {
-        //double d0 = gridUserControl.Height;
-        //double d1 = gridContent.Height;
-        //double d2 = stackPanelTop.Height;
-        //double dHeight = stackPanelGrid.Height;
-
-        Grid gridUserControl = this.FindControl<Grid>("gridUserControl");
-        double d1 = gridUserControl.Height;
-        
-        //dataGrid.Height = 200;
-    }
-
-    private void UserControl_LayoutUpdated(object? sender, System.EventArgs e)
-    {
-        ChangeDataGridHeight();
-    }
 }

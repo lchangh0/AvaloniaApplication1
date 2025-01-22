@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Ap2Tool
 {
-    public class AppConfig
+    public class CAppConfig
     {
        
         public static void CreateAppConfigFile()

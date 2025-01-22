@@ -8,6 +8,7 @@ namespace Ap2Tool.Views
         public MainWindow()
         {
             InitializeComponent();
+
             var vm = new MainWindowViewModel();
             vm.SetView(this);
             this.DataContext = vm;

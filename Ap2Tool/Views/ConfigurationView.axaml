@@ -7,7 +7,6 @@
              xmlns:vm="using:Ap2Tool.ViewModels"
              x:DataType="vm:ConfigurationViewModel">
 
-
   <Grid RowDefinitions="40,*">
   
     <!--제목 표시줄 -->
@@ -61,7 +60,8 @@
                      VerticalAlignment="Center"/>
           <TextBox Name="textSearch" Width="150" 
                    VerticalAlignment="Center"/>
-      
+
+          <!--검색 버튼 -->
           <Button Name="buttonSearch" 
                   Content="{Binding SearchButtonText, FallbackValue='Search'}" 
                   VerticalAlignment="Center" 

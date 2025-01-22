@@ -6,6 +6,7 @@ using Avalonia.Markup.Xaml;
 using Ap2Tool.ViewModels;
 using Ap2Tool.Views;
 using System.Linq;
+using ApCommon;
 
 namespace Ap2Tool
 {
@@ -16,10 +17,16 @@ namespace Ap2Tool
             AvaloniaXamlLoader.Load(this);
         }
 
-        public override void OnFrameworkInitializationCompleted()
+        public override async void OnFrameworkInitializationCompleted()
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                // 주의) VisualStudio AXAML Preview 화면에서도 이 함수가 호출된다.
+                // 만약 함수 실행 중 Exception이 발생하면 Preview 화면이 나타나지 않는다.
+
+                // config.json 파일과 리소스파일을 로드한다.
+                await CApp.LoadConfigJsonAndResourceAsync();
+
                 // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
                 // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
                 DisableAvaloniaDataAnnotationValidation();

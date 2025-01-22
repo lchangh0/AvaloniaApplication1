@@ -13,6 +13,10 @@ namespace Ap2Tool
 
     internal static class MessageBox
     {
+
+        // 메시지박스를 표시한다.
+        // 주의) Avalonia Framework가 초기화되기 전에 호출하면 에러가 발생한다.
+
         public static async Task<DialogResult> ShowAsync(string message, 
             string title = null, 
             MessageBoxButtons buttons = MessageBoxButtons.OK)

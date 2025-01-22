@@ -138,11 +138,11 @@ namespace Ap2Tool.ViewModels
 
         public bool Initialize()
         {
-            m_config = Program.Config;
+            m_config = CApp.Config;
             m_configLoaded = new CConfig(m_config);
 
-            ShowUiGroupChecked = CGenLib.StrToBool(AppConfig.GetValue("ShowUiGroup", "false"));
-            ShowDevelopGroupChecked = CGenLib.StrToBool(AppConfig.GetValue("ShowDevelopGroup", "false"));
+            ShowUiGroupChecked = CGenLib.StrToBool(CAppConfig.GetValue("ShowUiGroup", "false"));
+            ShowDevelopGroupChecked = CGenLib.StrToBool(CAppConfig.GetValue("ShowDevelopGroup", "false"));
 
             ClearItemDisplay();
 
@@ -218,10 +218,10 @@ namespace Ap2Tool.ViewModels
         {
             List<string> list = new List<string>();
 
-            if (CGenLib.StrToBool(AppConfig.GetValue("ShowDevelopGroup", "false")) == false)
+            if (CGenLib.StrToBool(CAppConfig.GetValue("ShowDevelopGroup", "false")) == false)
                 list.Add("Development");
 
-            if (CGenLib.StrToBool(AppConfig.GetValue("ShowUiGroup", "false")) == false)
+            if (CGenLib.StrToBool(CAppConfig.GetValue("ShowUiGroup", "false")) == false)
                 list.Add("UI");
 
             return list;
@@ -338,6 +338,8 @@ namespace Ap2Tool.ViewModels
 
             //SearchOptionName searchOption = GetSearchOption();
 
+            treeView.Focus();
+
             m_treeView = treeView;
             m_SearchResult.Clear();
 
@@ -420,7 +422,6 @@ namespace Ap2Tool.ViewModels
 
         void SelectTreeNode(TreeView treeView, CTreeNode treeNode)
         {
-            //treeView.SelectedItem = treeNode;
             TreeViewSelectedItem = treeNode;
         }
 
@@ -454,13 +455,13 @@ namespace Ap2Tool.ViewModels
             string strResoruceFileAfter = m_config.GetValue<string>(EConfigId.ResourceFileName);
             string strResoruceFileBefore = m_configLoaded.GetValue<string>(EConfigId.ResourceFileName);
 
-            bool bSaved = await Program.SaveConfigJsonAsync();
+            bool bSaved = await CApp.SaveConfigJsonAsync();
             if (bSaved)
                 await MessageBox.ShowAsync(CResource.GetString(CResource.IDS_COMPLETE, "Complete"));
 
             if (strResoruceFileAfter != strResoruceFileBefore)
             {
-                await Program.LoadAndInitConfigAsync(Program.ConfigFilePath);
+                await CApp.LoadAndInitConfigAsync(CApp.ConfigFilePath);
                 InitTreeviewAndShow();
                 ApplyResourceText();
             }
@@ -471,7 +472,7 @@ namespace Ap2Tool.ViewModels
         public void OnShowUiGroupCheckBoxChanged(bool bChecked)
         {
             ShowUiGroupChecked = bChecked;
-            AppConfig.SetValue("ShowUiGroup", bChecked.ToString());
+            CAppConfig.SetValue("ShowUiGroup", bChecked.ToString());
             InitTreeviewAndShow();
         }
 
@@ -479,7 +480,7 @@ namespace Ap2Tool.ViewModels
         public void OnShowDevelopGroupCheckBoxChanged(bool bChecked)
         {
             ShowDevelopGroupChecked = bChecked;
-            AppConfig.SetValue("ShowDevelopGroup", bChecked.ToString());
+            CAppConfig.SetValue("ShowDevelopGroup", bChecked.ToString());
             InitTreeviewAndShow();
         }
 

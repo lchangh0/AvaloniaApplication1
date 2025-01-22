@@ -5,11 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Ap2Tool.Views.FontListView"
              xmlns:vm="using:Ap2Tool.ViewModels"
-             x:DataType="vm:FontListViewModel"
-             Loaded="UserControl_Loaded"
-             SizeChanged="UserControl_SizeChanged"
-             LayoutUpdated="UserControl_LayoutUpdated">
-  
+             x:DataType="vm:FontListViewModel">
  
   <Grid Name="gridUserControl"
         RowDefinitions="40,*">
@@ -37,9 +33,9 @@
                 Command="{Binding HandleCommandScan}"/>
       </StackPanel>
 
-      <StackPanel Name="stackPanelGrid" 
-                  Grid.Row="1"
-                  Background="YellowGreen">
+      <!-- DataGrid가 Panel 크기 전체를 차지하기 위해서 DockPanel을 사용 -->
+      <DockPanel Name="dockPanelGrid" 
+                  Grid.Row="1">
         <DataGrid Name="dataGrid"
                   Margin="20,20,20,20" ItemsSource="{Binding Fonts}"
                   IsReadOnly="True"
@@ -55,7 +51,8 @@
           </DataGrid.Columns>
         </DataGrid>
 
-      </StackPanel>
+      </DockPanel>
+      
       
     </Grid>
     

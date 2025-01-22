@@ -3,9 +3,19 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Ap2Tool.Views.MainView">
+             x:Class="Ap2Tool.Views.MainView"
+             xmlns:vm="using:Ap2Tool.ViewModels"
+             x:DataType="vm:MainViewModel">
 
-  <StackPanel>
-  </StackPanel>
+  <Grid RowDefinitions="*,40">
+    <Grid Grid.Row="0">
+    </Grid>
+    <StackPanel Grid.Row="1"
+                Orientation="Horizontal" VerticalAlignment="Center">
+      <Label Content="{Binding Version, FallbackValue='Version'}" 
+             Margin="20,0,0,0"/>   
+    </StackPanel>
+  </Grid>
+  
   
 </UserControl>

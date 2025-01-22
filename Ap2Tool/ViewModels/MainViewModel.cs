@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,12 @@ namespace Ap2Tool.ViewModels
 {
     public partial class MainViewModel : ViewModelBase
     {
+        
+        public string Version
+        {
+            get { return "Ver. " + CApp.VERSION; }
+        }
+
 
     }
 }
