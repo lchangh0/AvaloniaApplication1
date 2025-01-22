@@ -26,7 +26,6 @@ namespace Ap2Tool.ViewModels
         [ObservableProperty]
         CTreeNode _TreeRoot;
 
-
         [ObservableProperty]
         string _ItemTitle;
 
@@ -128,7 +127,6 @@ namespace Ap2Tool.ViewModels
             _TreeRoot = new CTreeNode("");
             ItemDescriptionTitle = "";
             _ItemValueComboBoxItems = new ObservableCollection<CComboBoxItem>();
-
             ApplyResourceText();
         }
 
@@ -336,10 +334,6 @@ namespace Ap2Tool.ViewModels
             if (treeView == null)
                 return;
 
-            //SearchOptionName searchOption = GetSearchOption();
-
-            treeView.Focus();
-
             m_treeView = treeView;
             m_SearchResult.Clear();
 
@@ -356,6 +350,7 @@ namespace Ap2Tool.ViewModels
                 m_iSearchIdx = 0;
                 UpdateSearchResText();
 
+                TreeRoot.SetExpanded(true, bWithChilds: true);
                 SelectTreeNode(treeView, m_SearchResult[m_iSearchIdx]);
             }
             else

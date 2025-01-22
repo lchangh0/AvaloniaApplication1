@@ -5,6 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Ap2Tool.Views.ConfigurationView"
              xmlns:vm="using:Ap2Tool.ViewModels"
+             xmlns:m="using:Ap2Tool.Models"
              x:DataType="vm:ConfigurationViewModel">
 
   <Grid RowDefinitions="40,*">
@@ -19,7 +20,7 @@
 
     <!-- Content -->
     <Grid Grid.Row="1"
-          RowDefinitions="50,*" ColumnDefinitions="300,2,*">
+          RowDefinitions="50,*" ColumnDefinitions="400,2,*">
 
       <!-- 상단 바 -->
       <Grid Grid.Row="0" Grid.ColumnSpan="3" 
@@ -107,6 +108,13 @@
               <TextBlock Text="{Binding Title}"/>
             </TreeDataTemplate>
           </TreeView.ItemTemplate>
+
+          <TreeView.Styles>
+            <Style Selector="TreeViewItem" x:DataType="m:CTreeNode">
+              <Setter Property="IsExpanded" Value="{Binding IsExpanded}"/>
+            </Style>
+          </TreeView.Styles>
+          
         </TreeView>
       
       </Border>

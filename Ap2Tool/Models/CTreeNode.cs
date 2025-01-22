@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -7,10 +8,14 @@ using System.Threading.Tasks;
 
 namespace Ap2Tool.Models
 {
-    public class CTreeNode
+    public partial class CTreeNode : ObservableObject
     {
         public string Title { get; set; }
         public object? Value { get; set; }
+
+        [ObservableProperty]
+        public bool _IsExpanded;
+
         public ObservableCollection<CTreeNode>? SubNodes { get; set; }
 
         public CTreeNode(string title, 
@@ -19,6 +24,7 @@ namespace Ap2Tool.Models
         {
             Title = title;
             Value = value;
+            IsExpanded = false;
 
             if (subNodes != null)
                 SubNodes = subNodes;
@@ -26,6 +32,16 @@ namespace Ap2Tool.Models
                 SubNodes = [];
         }
 
+        public void SetExpanded(bool bValue, bool bWithChilds)
+        {
+            IsExpanded = bValue;
+
+            if (SubNodes != null && bWithChilds)
+            {
+                foreach (var subNode in SubNodes)
+                    subNode.SetExpanded(bValue, bWithChilds);
+            }
+        }
 
     }
 }
